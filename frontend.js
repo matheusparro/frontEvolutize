@@ -1,4 +1,5 @@
 async function initServiceWorker() {
+    console.log("Oi")
     let swRegistration = await navigator.serviceWorker.register('service-worker.js', {scope: '/webpush-ios-example/'})
     let pushManager = swRegistration.pushManager;
 
@@ -38,7 +39,7 @@ function isPushManagerActive(pushManager) {
 async function subscribeToPush() {
     // Public part of VAPID key, generation of that covered in README
     // All subscription tokens associated with that key, so if you change it - you may lose old subscribers
-    const VAPID_PUBLIC_KEY = 'BAwUJxIa7mJZMqu78Tfy2Sb1BWnYiAatFCe1cxpnM-hxNtXjAwaNKz1QKLU8IYYhjUASOFzSvSnMgC00vfsU0IM';
+    const VAPID_PUBLIC_KEY = 'BGEdXoP2YqcLAewGyX-0TgdcHs49M4Rh-imwynwQRSjdzD56IR73grVXF21y7yjBjOZHVH9FX4B-jxzFpK7sR-0';
 
     let swRegistration = await navigator.serviceWorker.getRegistration();
     let pushManager = swRegistration.pushManager;
