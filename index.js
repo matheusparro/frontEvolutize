@@ -1,16 +1,29 @@
 function notifyMe() {
-    if (!('Notification' in window)) {
-      alert('This browser does not support desktop notification');
-    } else if (Notification.permission === 'granted') {
-      handleServiceWorker();
-    } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          handleServiceWorker();
-        }
-      });
-    }
+  if (!('Notification' in window)) {
+    console.log('Este navegador não suporta notificações na área de trabalho');
+  } else {
+    new Promise((resolve) => {
+      Notification.requestPermission(resolve)?.then(resolve);
+    }).then(permission => handleServiceWorker())
   }
+}
+
+// function notifyMe() {
+//     // if (!('Notification' in window)) {
+//     //   alert('This browser does not support desktop notification');
+//     // } else if (Notification.permission === 'granted') {
+//     //   handleServiceWorker();
+//     // } else if (Notification.permission !== 'denied') {
+//     //   Notification.requestPermission().then((permission) => {
+//     //     if (permission === 'granted') {
+//     //       handleServiceWorker();
+//     //     }
+//     //   });
+//     // }
+//     new Promise((resolve) => {
+//       Notification.requestPermission(resolve)?.then(resolve);
+//    }).then(permission => console.log(permission))
+//   }
   
   function handleServiceWorker() {
  alert("IHRA")
