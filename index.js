@@ -1,10 +1,33 @@
-function notifyMe() {
-  if (!('Notification' in window)) {
-    console.log('Este navegador não suporta notificações na área de trabalho');
-  } else {
-    new Promise((resolve) => {
-      Notification.requestPermission(resolve)?.then(resolve);
-    }).then(permission => handleServiceWorker())
+// function notifyMe() {
+//   if (!('Notification' in window)) {
+//     console.log('Este navegador não suporta notificações na área de trabalho');
+//   } else {
+//     new Promise((resolve) => {
+//       Notification.requestPermission(resolve)?.then(resolve);
+//     }).then(permission => handleServiceWorker())
+//   }
+// }
+
+async function notifyMe() {
+  let swRegistration = await navigator.serviceWorker.register('service-worker.js', {scope: '/webpush-ios-example/'})
+  let pushManager = swRegistration.pushManager;
+
+  if (!isPushManagerActive(pushManager)) {
+      return;
+  }
+
+  let permissionState = await pushManager.permissionState({userVisibleOnly: true});
+  switch (permissionState) {
+      case 'prompt':
+          document.getElementById('subscribe_btn').style.display = 'block';
+          break;
+      case 'granted':
+          displaySubscriptionInfo(await pushManager.getSubscription())
+          break;
+      case 'denied':
+          document.getElementById('subscribe_btn').style.display = 'none';
+          document.getElementById('active_sub').style.display = 'block';
+          document.getElementById('active_sub').innerHTML = 'User denied push permission';
   }
 }
 
@@ -25,10 +48,9 @@ function notifyMe() {
 //    }).then(permission => console.log(permission))
 //   }
   
-  function handleServiceWorker() {
+  function subscribeToPush() {
  alert("IHRA")
-    navigator.serviceWorker.register("service-worker.js")
-      .then(async (serviceWorker) => {
+    navigator.serviceWorker.getRegistration().then(async (serviceWorker) => {
         serviceWorker.update();
   
         let subscription = await serviceWorker.pushManager.getSubscription();
@@ -64,3 +86,10 @@ function notifyMe() {
   
   document.getElementById('subscribeButton').addEventListener('click', notifyMe);
   
+  if ((new URLSearchParams(window.location.search)).get('page') === 'success') {
+    document.getElementById('content').innerHTML = 'You successfully opened page from WebPush! (this url was that was set in json data param)';
+}
+
+if (navigator.serviceWorker) {
+    initServiceWorker();
+}

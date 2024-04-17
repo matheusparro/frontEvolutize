@@ -1,5 +1,6 @@
 async function initServiceWorker() {
-    let swRegistration = await navigator.serviceWorker.register('https://andreinwald.github.io/webpush-ios-example/serviceworker.js', {scope: '/webpush-ios-example/'})
+    console.log("OIII")
+    let swRegistration = await navigator.serviceWorker.register('serviceworker.js', {scope: '/webpush-ios-example/'})
     let pushManager = swRegistration.pushManager;
 
     if (!isPushManagerActive(pushManager)) {
@@ -7,6 +8,7 @@ async function initServiceWorker() {
     }
 
     let permissionState = await pushManager.permissionState({userVisibleOnly: true});
+    console.log(permissionState)
     switch (permissionState) {
         case 'prompt':
             document.getElementById('subscribe_btn').style.display = 'block';
@@ -18,7 +20,7 @@ async function initServiceWorker() {
             document.getElementById('subscribe_btn').style.display = 'none';
             document.getElementById('active_sub').style.display = 'block';
             document.getElementById('active_sub').innerHTML = 'User denied push permission';
-    }
+    // }
 }
 
 function isPushManagerActive(pushManager) {
@@ -31,7 +33,7 @@ function isPushManagerActive(pushManager) {
         document.getElementById('subscribe_btn').style.display = 'none';
         return false;
     } else {
-        return true;
+       return false;
     }
 }
 
