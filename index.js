@@ -20,14 +20,14 @@ function notifyMe() {
   
         let subscription = await serviceWorker.pushManager.getSubscription();
         if (!subscription) {
-          const publicKeyResponse = await fetch('http://192.168.1.11:3333/notification/push/public_key');
+          const publicKeyResponse = await fetch('https://backendevolutize.onrender.com/notification/push/public_key');
           const publicKeyData = await publicKeyResponse.json();
           subscription = await serviceWorker.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: publicKeyData.publicKey,
           });
         }
-        var string = 'http://192.168.1.11:3333/notification/push/register'
+        var string = 'https://backendevolutize.onrender.com/notification/push/register'
         await fetch(string, {
           method: 'POST',
           headers: {
@@ -35,9 +35,9 @@ function notifyMe() {
           },
           body: JSON.stringify({ subscription })
         });
-        var stringF = 'http://192.168.1.11:3333/notification/push/send'
+        var stringF = 'https://backendevolutize.onrender.com/notification/push/send'
         console.log(stringF)
-        await fetch('http://192.168.1.11:3333/notification/push/send', {
+        await fetch('https://backendevolutize.onrender.com/notification/push/send', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
