@@ -2,7 +2,7 @@ async function initServiceWorker() {
     console.log("Oi")
     let swRegistration = await navigator.serviceWorker.register('service-worker.js', {scope: '/webpush-ios-example/'})
     let pushManager = swRegistration.pushManager;
-
+    debugger
     if (!isPushManagerActive(pushManager)) {
         return;
     }
