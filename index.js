@@ -33,7 +33,7 @@ alert("IHRA")
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ subscription })
+        body: JSON.stringify({ subscription, publickey:publicKeyData.publicKey })
       });
       var stringF = 'https://backendevolutize.onrender.com/notification/push/send'
       console.log(stringF)
