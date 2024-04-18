@@ -27,14 +27,14 @@ alert("IHRA")
           applicationServerKey: publicKeyData.publicKey,
         });
       }
-      var string = 'https://backendevolutize.onrender.com/notification/push/register'
-      await fetch(string, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ subscription })
-      });
+      // var string = 'https://backendevolutize.onrender.com/notification/push/register'
+      // await fetch(string, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({ subscription })
+      // });
       var stringF = 'https://backendevolutize.onrender.com/notification/push/send'
       console.log(stringF)
       await fetch('https://backendevolutize.onrender.com/notification/push/send', {
