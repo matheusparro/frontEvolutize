@@ -24,7 +24,7 @@ alert("IHRA")
         const publicKeyData = await publicKeyResponse.json();
         subscription = await serviceWorker.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: publicKeyData,
+          applicationServerKey: publicKeyData.publicKey,
         });
       }
       var string = 'https://backendevolutize.onrender.com/notification/push/register'
