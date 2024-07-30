@@ -76,36 +76,63 @@
 
 // document.getElementById('subscribeButton').addEventListener('click', notifyMe);
 // document.getElementById('verifyButton').addEventListener('click', verficarSubscricao);
-async function registerServiceWorker() {
-  try {
-    const registration = await navigator.serviceWorker.register("service-worker.js");
-    return registration;
-  } catch (error) {
-    console.error('Erro ao registrar o Service Worker:', error);
-  }
-}
+// async function registerServiceWorker() {
+//   try {
+//     const registration = await navigator.serviceWorker.register("service-worker.js");
+//     return registration;
+//   } catch (error) {
+//     console.error('Erro ao registrar o Service Worker:', error);
+//   }
+// }
 
-async function requestNotificationPermission() {
-  const permission = await Notification.requestPermission();
-  return permission;
-}
+// async function requestNotificationPermission() {
+//   const permission = await Notification.requestPermission();
+//   return permission;
+// }
 
-async function notifyMe() {
+// async function notifyMe() {
+//   if (!('Notification' in window)) {
+//     alert('Este navegador não suporta notificações desktop');
+//     return;
+//   }
+
+//   const permission = await requestNotificationPermission();
+
+//   if (permission === 'granted') {
+//     const registration = await registerServiceWorker();
+//     if (registration) {
+//       registration.showNotification('Notificação com ServiceWorker');
+//     }
+//   } else if (permission === 'denied') {
+//     alert('Permissão para notificações foi negada.');
+//   }
+// }
+
+// document.getElementById('subscribeButton').addEventListener('click', notifyMe);
+
+function notifyMe() {
+  // Verifica se o navegador suporta notificações
   if (!('Notification' in window)) {
     alert('Este navegador não suporta notificações desktop');
     return;
   }
 
-  const permission = await requestNotificationPermission();
-
-  if (permission === 'granted') {
-    const registration = await registerServiceWorker();
-    if (registration) {
-      registration.showNotification('Notificação com ServiceWorker');
+  // Solicita permissão para notificações
+  Notification.requestPermission(function(result) {
+    if (result === 'granted') {
+      // Registra o Service Worker
+      navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+        // Quando o Service Worker estiver pronto, exibe a notificação
+        registration.showNotification('Notificação com ServiceWorker');
+      }).catch(function(error) {
+        console.error('Erro ao registrar o Service Worker:', error);
+      });
+    } else if (result === 'denied') {
+      alert('Permissão para notificações foi negada.');
     }
-  } else if (permission === 'denied') {
-    alert('Permissão para notificações foi negada.');
-  }
+  });
 }
 
+// Adiciona evento ao botão
 document.getElementById('subscribeButton').addEventListener('click', notifyMe);
+
