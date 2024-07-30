@@ -1,17 +1,25 @@
 function notifyMe() {
-  if (!('Notification' in window)) {
-    alert('This browser does not support desktop notification');
-  } else if (Notification.permission === 'granted') {
-    handleServiceWorker();
-  } else if (Notification.permission !== 'denied') {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        handleServiceWorker();
-      }
-    });
-  }else{
-    handleServiceWorker();
-  }
+  // if (!('Notification' in window)) {
+  //   alert('This browser does not support desktop notification');
+  // } else if (Notification.permission === 'granted') {
+  //   handleServiceWorker();
+  // } else if (Notification.permission !== 'denied') {
+  //   Notification.requestPermission().then((permission) => {
+  //     if (permission === 'granted') {
+  //       handleServiceWorker();
+  //     }
+  //   });
+  // }else{
+  //   handleServiceWorker();
+  // }
+  navigator.serviceWorker.register("service-worker.js")
+  Notification.requestPermission(function(result) {
+    if (result === 'granted') {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.showNotification('Notification with ServiceWorker');
+      });
+    }
+  });
 }
 
 function handleServiceWorker() {
