@@ -9,12 +9,30 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="apple-touch-icon" href="images/favicon.png"> <!-- needed for phone PWA app icon -->
   <title>Push Notification Test - Evolutize</title>
+  <style>
+    #cameraContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 80vh;
+      position: relative;
+    }
+    video {
+      width: 100%;
+      height: auto;
+      border: 1px solid black;
+    }
+    button {
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>Push Notification Test - Evolutize</h1>
   <button id="subscribeButton">Subscribe to Notifications - Evolutize</button>
   <button id="verifyButton">Verify Subscription - Evolutize</button>
-  <button id="openCameraButton">Abrir Câmera</button>
+  <button id="openCameraButton">Open Camera</button>
   <div id="cameraContainer"></div>
   <script src="index.js"></script>
   <script src="service-worker.js"></script>

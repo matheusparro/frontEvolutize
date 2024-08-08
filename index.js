@@ -55,14 +55,16 @@ function openCamera() {
     .then(stream => {
       const videoElement = document.createElement('video');
       videoElement.srcObject = stream;
-      videoElement.play();
+      videoElement.autoplay = true;
+      videoElement.style.width = '100%';
+      videoElement.style.height = 'auto';
 
       const cameraContainer = document.getElementById('cameraContainer');
       cameraContainer.innerHTML = '';
       cameraContainer.appendChild(videoElement);
 
       const captureButton = document.createElement('button');
-      captureButton.textContent = 'Capturar Foto';
+      captureButton.textContent = 'Capture Photo';
       cameraContainer.appendChild(captureButton);
 
       captureButton.addEventListener('click', () => {
@@ -90,4 +92,3 @@ function openCamera() {
 }
 
 document.getElementById('openCameraButton').addEventListener('click', openCamera);
-
