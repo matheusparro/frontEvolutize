@@ -21,21 +21,6 @@ function notifyMe() {
 // Adiciona evento ao botão de subscrição
 document.getElementById('subscribeButton').addEventListener('click', notifyMe);
 
-// Função para abrir a câmera e capturar uma foto
-async function openCamera() {
-  try {
-    const video = document.getElementById('video');
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
-
-    // Quando o vídeo começar a tocar, tira uma foto após 3 segundos
-    video.onloadedmetadata = () => {
-      setTimeout(capturePhoto, 3000); // Captura a foto após 3 segundos
-    };
-  } catch (error) {
-    console.error('Erro ao acessar a câmera:', error);
-  }
-}
 
 // Função para capturar uma foto da câmera
 function capturePhoto() {
@@ -59,4 +44,50 @@ function capturePhoto() {
 }
 
 // Adiciona evento ao botão de câmera
-document.getElementById('cameraButton').addEventListener('click', openCamera);
+function openCamera() {
+  // Verifica se o navegador suporta a API de MediaDevices
+  if (!('mediaDevices' in navigator) || !('getUserMedia' in navigator.mediaDevices)) {
+    alert('Este navegador não suporta acesso à câmera');
+    return;
+  }
+
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      const videoElement = document.createElement('video');
+      videoElement.srcObject = stream;
+      videoElement.play();
+
+      const cameraContainer = document.getElementById('cameraContainer');
+      cameraContainer.innerHTML = '';
+      cameraContainer.appendChild(videoElement);
+
+      const captureButton = document.createElement('button');
+      captureButton.textContent = 'Capturar Foto';
+      cameraContainer.appendChild(captureButton);
+
+      captureButton.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+        const imageUrl = canvas.toDataURL('image/png');
+        console.log(imageUrl);
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        cameraContainer.innerHTML = '';
+        cameraContainer.appendChild(img);
+
+        // Para a stream da câmera
+        stream.getTracks().forEach(track => track.stop());
+      });
+    })
+    .catch(error => {
+      console.error('Erro ao acessar a câmera:', error);
+    });
+}
+
+document.getElementById('openCameraButton').addEventListener('click', openCamera);
+
