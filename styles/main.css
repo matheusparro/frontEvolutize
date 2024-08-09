@@ -64,6 +64,10 @@ header h1 {
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
 }
 
 .job-card:hover {
@@ -83,7 +87,6 @@ header h1 {
 }
 
 .details-btn {
-  display: inline-block;
   background-color: #472f92;
   color: #fff;
   border: none;
@@ -91,11 +94,13 @@ header h1 {
   padding: 10px 20px;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  align-self: flex-end;
 }
 
 .details-btn:hover {
   background-color: #351e73;
+  transform: translateY(-2px);
 }
 
 /* Paginação */
@@ -107,24 +112,32 @@ header h1 {
 }
 
 .pagination-btn {
-  background-color: #472f92;
-  color: #fff;
+  background-color: #e0e0e0;
+  color: #333;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  margin: 0 10px;
-  transition: background-color 0.3s ease;
+  margin: 0 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .pagination-btn:hover {
-  background-color: #351e73;
+  background-color: #cccccc;
+  transform: translateY(-1px);
+}
+
+.pagination-btn:active {
+  background-color: #b3b3b3;
+  transform: translateY(0);
 }
 
 .pagination span {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #555;
+  margin: 0 10px;
 }
 
 /* Rodapé */
