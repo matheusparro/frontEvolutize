@@ -1,40 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="apple-touch-icon" href="images/favicon.png"> <!-- needed for phone PWA app icon -->
-  <title>Push Notification Test - Evolutize</title>
-  <style>
-    #cameraContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 80vh;
-      position: relative;
-    }
-    video {
-      width: 100%;
-      height: auto;
-      border: 1px solid black;
-    }
-    button {
-      margin: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Vagas de Emprego</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #534392;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr); /* 1 coluna padrão para mobile */
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .job-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%; /* Ajusta para ocupar toda a altura disponível */
+        }
+
+        .job-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2980b9;
+        }
+
+        .job-card p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .job-card button {
+            background-color: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            align-self: flex-start; /* Para garantir que o botão fique no fundo */
+            margin-top: auto; /* Adiciona margem superior automática para empurrar o botão para o fundo */
+        }
+
+        .job-card button:hover {
+            background-color: #1a6391;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .pagination button {
+            background-color: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #1a6391;
+        }
+
+        .pagination span {
+            font-size: 1rem;
+            margin: 0 10px;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Media queries para responsividade */
+        @media (min-width: 576px) {
+            .job-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 colunas em telas pequenas */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .job-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 colunas em telas médias */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .job-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 colunas em telas grandes */
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .job-grid {
+                grid-template-columns: repeat(5, 1fr); /* 5 colunas em telas extra grandes */
+            }
+        }
+
+        /* Estilos para o modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+            align-items: center;
+            justify-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            border-radius: 10px;
+            height: 80%;
+            
+        }
+
+        .modal-content h2 {
+            color: #2980b9;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <h1>Push Notification Test - Evolutize</h1>
-  <button id="subscribeButton">Subscribe to Notifications - Evolutize</button>
-  <button id="verifyButton">Verify Subscription - Evolutize</button>
-  <button id="openCameraButton">Open Camera</button>
-  <div id="cameraContainer"></div>
-  <script src="index.js"></script>
-  <script src="service-worker.js"></script>
+    <header>
+        <div class="container">
+            <h1>Vagas de Emprego</h1>
+        </div>
+    </header>
+    <main class="container">
+        <div class="job-grid" id="job-grid">
+            <!-- As vagas serão carregadas dinamicamente aqui -->
+        </div>
+        <div class="pagination">
+            <button id="prev-page">Anterior</button>
+            <span id="page-number">1</span>
+            <button id="next-page">Próxima</button>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 - Lista de Vagas de Emprego</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h2 id="job-title">Nome da Vaga</h2>
+            <p id="job-details">Detalhes da Vaga</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = 'http://10.0.11.67:8080/DelsoftX_1.37.1JavaSQL/servlet/arhf_retornavagasws';
+            const jobsPerPage = 10;
+            let currentPage = 1;
+            let jobs = [];
+
+            function fetchJobs() {
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.isError) {
+                            console.error('Erro ao buscar vagas:', data.mensagem);
+                            return;
+                        }
+                        jobs = data.vagas.map(vaga => ({
+                            id: vaga.RHF_VagasEmpresa * 1000 + vaga.RHR_VagasSequencia, // Gera um ID único
+                            title: vaga.RHR_VagasNome,
+                            company: vaga.RHF_VagasEmpresa, // Ajustar conforme necessário
+                            location: `${vaga.RHR_VagasCidade}, ${vaga.RHR_VagasEstado}`,
+                        }));
+                        renderJobs(currentPage);
+                    })
+                    .catch(error => console.error('Erro ao buscar vagas:', error));
+            }
+
+            function renderJobs(page) {
+                const jobGrid = document.getElementById('job-grid');
+                jobGrid.innerHTML = '';
+                const start = (page - 1) * jobsPerPage;
+                const end = start + jobsPerPage;
+                const paginatedJobs = jobs.slice(start, end);
+
+                paginatedJobs.forEach(job => {
+                    const jobCard = document.createElement('div');
+                    jobCard.className = 'job-card';
+                    jobCard.setAttribute('data-id', job.id);
+                    jobCard.innerHTML = `
+                        <h2>${job.title}</h2>
+                        <p>Empresa: ${job.company}</p>
+                        <p>Local: ${job.location}</p>
+                        <button onclick="verDetalhes(${job.id})">Ver Detalhes</button>
+                    `;
+                    jobGrid.appendChild(jobCard);
+                });
+
+                document.getElementById('page-number').textContent = page;
+            }
+
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderJobs(currentPage);
+                }
+            });
+
+            document.getElementById('next-page').addEventListener('click', () => {
+                if ((currentPage * jobsPerPage) < jobs.length) {
+                    currentPage++;
+                    renderJobs(currentPage);
+                }
+            });
+
+            fetchJobs(); // Inicializa a busca das vagas
+        });
+
+        function verDetalhes(jobId) {
+            // Aqui você faria uma requisição para a API para obter os detalhes da vaga usando o jobId
+            // Exemplo de URL: http://10.0.11.67:8080/DelsoftX_1.37.1JavaSQL/servlet/arhf_retornavagasws/{jobId}
+            // Atualize os dados do modal conforme necessário
+            
+            document.getElementById('job-title').textContent = "Vaga teste titulo"; // Atualize com dados reais
+            document.getElementById('job-details').textContent = "Job requirements"; // Atualize com dados reais
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
