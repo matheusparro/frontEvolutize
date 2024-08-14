@@ -13,11 +13,13 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
-
+/* Evita rolagem do fundo quando o modal está aberto */
+body.modal-open {
+  overflow: hidden;
+}
 /* Container principal */
 .container {
   width: 90%;
-  max-width: 1200px;
   margin: 0 auto;
   flex: 1;
 }
@@ -26,28 +28,33 @@ body {
 header {
   background-color: #ffffff;
   color: #472f92;
-  padding: 20px 0;
-  text-align: center;
+  padding: 30px 0;
   border-bottom: 2px solid #f0f0f0;
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  position: relative;
 }
 
-header .header-container {
+.header-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
-header .logo {
-  width: 50px;
+.logo {
+  max-width: 100%;
   height: auto;
-  margin-right: 15px;
+  position: absolute;
+  left: 20px; /* Ajuste conforme necessário */
 }
 
 header h1 {
   font-size: 1.8rem;
   font-weight: bold;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 /* Estilo da grade de vagas */
@@ -171,7 +178,6 @@ footer {
   padding: 30px;
   border-radius: 8px;
   width: 80%;
-  max-width: 600px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -195,11 +201,80 @@ footer {
   cursor: pointer;
 }
 
+.job-image {
+  width: 100%; /* Faz a imagem ocupar a largura total do contêiner */
+  max-width: 100%; /* Garante que a largura máxima não ultrapasse o tamanho do contêiner */
+  height: auto; /* Mantém a proporção original da imagem */
+  margin: 20px 0;
+  display: block; /* Remove espaçamentos indesejados ao redor da imagem */
+  object-fit: contain; /* Faz com que a imagem se ajuste dentro do contêiner sem distorção */
+  max-height: 400px; /* Define uma altura máxima para a imagem para evitar que fique muito alta */
+}
+
+#job-requirements {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+#job-details-title{
+  color: #472f92;
+  padding-bottom: 1rem;
+}
+#btn-anexo {
+  background-color: #8a4dff; /* Cor de fundo roxa */
+  color: #fff; /* Cor do texto em branco */
+  border: none; /* Remove a borda padrão */
+  border-radius: 25px; /* Bordas arredondadas */
+  padding: 10px 20px; /* Espaçamento interno */
+  font-size: 16px; /* Tamanho da fonte */
+  font-weight: bold; /* Fonte em negrito */
+  cursor: pointer; /* Cursor de mão ao passar o mouse */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Transições suaves */
+  display: inline-block; /* Para alinhar o botão como um bloco inline */
+  text-align: center; /* Centraliza o texto */
+  margin-top: 1rem;
+}
+
+#btn-anexo:hover {
+  background-color: #6a2bff; /* Cor de fundo ao passar o mouse */
+  transform: translateY(-2px); /* Eleva o botão ao passar o mouse */
+}
+
+#btn-anexo:active {
+  background-color: #4a1f9a; /* Cor de fundo ao clicar */
+  transform: translateY(0); /* Retorna a posição ao clicar */
+}
+
+#btn-curriculo {
+  background-color: #a7a9ad; /* Cor de fundo verde */
+  color: #fff; /* Cor do texto em branco */
+  border: none; /* Remove a borda padrão */
+  border-radius: 25px; /* Bordas arredondadas */
+  padding: 10px 20px; /* Espaçamento interno */
+  font-size: 16px; /* Tamanho da fonte */
+  font-weight: bold; /* Fonte em negrito */
+  cursor: pointer; /* Cursor de mão ao passar o mouse */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Transições suaves */
+  display: inline-block; /* Para alinhar o botão como um bloco inline */
+  text-align: center; /* Centraliza o texto */
+  margin-top: 1rem;
+}
+
+#btn-curriculo:hover {
+  background-color: #a7a9ad; /* Cor de fundo ao passar o mouse */
+  transform: translateY(-2px); /* Eleva o botão ao passar o mouse */
+}
+
+#btn-curriculo:active {
+  background-color: #5f5f61; /* Cor de fundo ao clicar */
+  transform: translateY(0); /* Retorna a posição ao clicar */
+}
+
 /* Responsividade */
 @media (min-width: 576px) {
   .job-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  
 }
 
 @media (min-width: 768px) {
@@ -211,5 +286,11 @@ footer {
 @media (min-width: 992px) {
   .job-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+/* Ocultar logo em dispositivos móveis */
+@media (max-width: 700px) {
+  .logo {
+    display: none;
   }
 }

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Vagas de Emprego</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+  <header>
+    <div class="container header-container">
+      <img id="logoEmpresa" alt="Logo da Empresa" class="logo" />
+      <div class="title-vagas">
+        <h1>Vagas Abertas</h1>
+      </div>
+
+    </div>
+  </header>
+  <main class="container">
+    <div class="job-grid" id="job-grid"></div>
+    <div class="pagination">
+      <button id="prev-page" class="pagination-btn">Anterior</button>
+      <span id="page-number">1</span>
+      <button id="next-page" class="pagination-btn">Próxima</button>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <p> © Copyright 2024 Evolutize. Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <h2 id="job-title">Nome da Vaga</h2>
+      <h4 id="job-details-title">Detalhes da Vaga </h4>
+      <p id="job-details" style="padding-bottom: 1rem;">Detalhes da Vaga</p>
+      <h4 id="job-details-title">Requisitos da Vaga </h4>
+      <ul id="job-requirements"></ul>
+      <div>
+        <button id="btn-anexo">Saiba Mais</button>
+        <button id="btn-curriculo" onclick="">Cadastrar Currículo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getBaseURLLocal() {
+      //var a = location.href;
+      //a.substring(0, a.indexOf("/", 14));
+      var a = location.href,
+        b = a.indexOf(location.pathname),
+        b = a.indexOf("/", b + 1);
+      a = a.substr(0, b);
+      a = a.substr(0, b).endsWith("/static/") ? a.replace("/static/", "") : a;
+      a = a.substr(0, b).endsWith("/static") ? a.replace("/static", "") : a;
+      return a.substr(0, b) + "/";
+    }
+    var baseUrl = getBaseURLLocal();
+
+    // Construir URLs de API dinamicamente
+    const urlDetalhes = baseUrl + 'servlet/arhf_retornavagasdetalhesws';
+    const apiUrl = baseUrl + 'servlet/arhf_retornavagasws';
+    const curriculoUrl = baseUrl + 'servlet/logincurriculo';
+    const logoUrl = baseUrl + 'servlet/arhf_envialogoempresaws';
+  
+    document.addEventListener("DOMContentLoaded", function () {
+      const jobsPerPage = 12;
+      let currentPage = 1;
+      let jobs = [];
+
+      var logoElement = document.getElementById('logoEmpresa');
+
+      if (logoElement && logoElement.tagName === 'IMG') {
+        logoElement.src = logoUrl;
+      }
+
+
+      function fetchJobs() {
+        fetch(apiUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.isError) {
+              console.error("Erro ao buscar vagas:", data.mensagem);
+              return;
+            }
+            jobs = data.vagas.map((vaga) => ({
+              id: vaga.RHR_VagasSequencia, // Gera um ID único
+              title: vaga.RHR_VagasNome,
+              company: vaga.RHF_VagasEmpresa, // Ajustar conforme necessário
+              location: `${vaga.RHR_VagasCidade}, ${vaga.RHR_VagasEstado}`,
+            }));
+            renderJobs(currentPage);
+          })
+          .catch((error) => console.error("Erro ao buscar vagas:", error));
+      }
+
+      function renderJobs(page) {
+        const jobGrid = document.getElementById("job-grid");
+        jobGrid.innerHTML = "";
+        const start = (page - 1) * jobsPerPage;
+        const end = start + jobsPerPage;
+        const paginatedJobs = jobs.slice(start, end);
+
+        paginatedJobs.forEach((job) => {
+          const jobCard = document.createElement("div");
+          jobCard.className = "job-card";
+          jobCard.setAttribute("data-id", job.id);
+          jobCard.innerHTML = `
+              <h2>${job.title}</h2>
+              <p>Local: ${job.location}</p>
+              <button onclick="verDetalhes(${job.id})" class="details-btn">Ver Detalhes</button>
+            `;
+          jobGrid.appendChild(jobCard);
+        });
+
+        document.getElementById("page-number").textContent = page;
+      }
+
+      document.getElementById("prev-page").addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderJobs(currentPage);
+        }
+      });
+
+      document.getElementById("next-page").addEventListener("click", () => {
+        if (currentPage * jobsPerPage < jobs.length) {
+          currentPage++;
+          renderJobs(currentPage);
+        }
+      });
+
+      const btnCurriculo = document.getElementById('btn-curriculo');
+
+      // Define o URL para onde o botão vai redirecionar
+
+      // Adiciona o evento de clique ao botão
+      btnCurriculo.onclick = function () {
+        window.location.href = curriculoUrl;
+      };
+
+      fetchJobs(); // Inicializa a busca das vagas
+    });
+    function openAnexo(fotoUrl) {
+      if (fotoUrl) {
+        window.open(fotoUrl, '_blank'); // _blank abre a URL em uma nova aba
+      }
+    }
+
+    async function verDetalhes(jobId) {
+      console.log(jobId)
+
+      const formData = new FormData();
+      formData.append('RHR_VagasSequencia', jobId); // Use the dynamic jobId instead of hardcoded value
+
+      try {
+        const response = await fetch(urlDetalhes, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao buscar os detalhes da vaga');
+        }
+
+        const data = await response.json();
+
+        // Atualizar os dados do modal com os detalhes da vaga
+        document.getElementById('job-title').textContent = data.RHR_VagasNome;
+        document.getElementById('job-details').textContent = data.RHR_VagasDescricao;
+        document.getElementById('btn-anexo').onclick = function () {
+          openAnexo(data.Foto);
+        };
+        // Exibir os requisitos em tópicos
+        // Dividir requisitos em tópicos
+        const requirements = data.RHR_VagasAnexoRequisitos.split(';').filter(req => req.trim());
+        const requirementsList = document.getElementById('job-requirements');
+        requirementsList.innerHTML = '';
+        requirements.forEach(req => {
+          const li = document.createElement('li');
+          li.textContent = req.trim();
+          requirementsList.appendChild(li);
+        });
+
+        document.getElementById('myModal').style.display = 'block';
+        document.body.classList.add('modal-open'); // Adiciona a classe modal-open
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Ocorreu um erro ao buscar os detalhes da vaga.');
+      }
+    }
+
+    function fecharModal() {
+      document.getElementById("myModal").style.display = "none";
+      document.body.classList.remove('modal-open'); // Remove a classe modal-open
+    }
+    window.onclick = function (event) {
+      const modal = document.getElementById("myModal");
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+  </script>
+</body>
+
+</html>
